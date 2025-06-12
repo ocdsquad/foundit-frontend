@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="#!">FoundIt</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+                <!-- Logo kiri -->
+                <div></div> <!-- Kosongkan agar logo tetap di kiri -->
+
+                <!-- Navbar tengah -->
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item mx-3"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+                    <li class="nav-item mx-3"><a class="nav-link" href="#!">Form</a></li>
+                    <li class="nav-item mx-3"><a class="nav-link" href="#!">Dashboard</a></li>
+                    <li class="nav-item mx-3"><a class="nav-link" href="#!">About</a></li>
+                </ul>
+
+                <!-- Profile kanan -->
+                <form class="d-flex">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark dropdown-toggle d-flex align-items-center" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-2"></i>
+                            <span class="d-none d-lg-inline">Profile</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
