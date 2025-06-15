@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EmailSession
+class AuthCustom
 {
     /**
      * Handle an incoming request.
@@ -15,10 +15,12 @@ class EmailSession
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (session()->has('registered_email')) {
+        if (session()->has('auth') && session('auth')['exp'] > time()) {
             return $next($request);
         }
 
-        return back();
+        session()->forget('auth');
+
+        return redirect('/login');
     }
 }

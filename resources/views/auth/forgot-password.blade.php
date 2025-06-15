@@ -22,43 +22,32 @@
         <div class="container px-4 px-lg-5 mb-5">
             <div class="row justify-content-center">
                 <div class="col-lg-4">
-                    <h2 class="mb-5 text-center">Sign In</h2>
+                    <h3 class="mb-5 text-center">Forgot Password</h3>
                     @if (session('flash'))
                         <div class="alert alert-{{ session('flash')[0] }}">
                             {{ session('flash')[1] }}
                         </div>
                     @endif
-                    <form action="/login" method="post">
+                    <form action="/forgot-password" method="post">
                         @csrf
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" name="username"
-                                class="form-control @error('username') is-invalid @enderror" id="username"
-                                placeholder="Username" value="{{ old('username') }}">
-                            @error('username')
+                        <input type="hidden" name="email" value="{{ session('registered_email') }}">
+                        <div class="mb-5">
+                            <label for="email" class="mt-4 mb-2 ms-1">Enter your email address</label>
+                            <input type="text" name="email"
+                                class="form-control @error('email') is-invalid @enderror" placeholder="Email"
+                                value="{{ old('email') }}">
+                            @error('email')
                                 <div class="text-danger mt-2">{{ $message }}</div>
                             @enderror
+                            <button class="btn btn-dark w-100 my-3" type="submit" id="otp">Submit</button>
                         </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" name="password"
-                                class="form-control @error('password') is-invalid @enderror" id="password"
-                                placeholder="Password">
-                            @error('password')
-                                <div class="text-danger mt-2">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <button type="submit" class="btn btn-dark w-100">Sign In</button>
-                        <small class="d-block text-start mt-3"><a href="/forgot-password"
-                                class="link-offset-2 text-dark">Forgot
-                                Password?</a></small>
                     </form>
                 </div>
             </div>
         </div>
     </section>
     <!-- Footer-->
-    <footer class="py-5 bg-dark mt-1">
+    <footer class="py-5 bg-dark mt-5">
         <div class="container">
             <p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p>
         </div>

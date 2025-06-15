@@ -21,37 +21,36 @@
     <section class="py-5">
         <div class="container px-4 px-lg-5 mb-5">
             <div class="row justify-content-center">
-                <div class="col-lg-4">
-                    <h2 class="mb-5 text-center">Sign In</h2>
+                <div class="col-lg-6">
+                    <h2 class="mb-5 text-center">Reset Password</h2>
                     @if (session('flash'))
                         <div class="alert alert-{{ session('flash')[0] }}">
                             {{ session('flash')[1] }}
                         </div>
                     @endif
-                    <form action="/login" method="post">
+                    <form action="/reset-password" method="post">
                         @csrf
+                        <input type="hidden" name="token" value="{{ request()->token }}">
+                        <input type="hidden" name="email" value="{{ request()->email }}">
                         <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" name="username"
-                                class="form-control @error('username') is-invalid @enderror" id="username"
-                                placeholder="Username" value="{{ old('username') }}">
-                            @error('username')
-                                <div class="text-danger mt-2">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">New Password</label>
                             <input type="password" name="password"
                                 class="form-control @error('password') is-invalid @enderror" id="password"
-                                placeholder="Password">
+                                placeholder="New Password">
                             @error('password')
                                 <div class="text-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-dark w-100">Sign In</button>
-                        <small class="d-block text-start mt-3"><a href="/forgot-password"
-                                class="link-offset-2 text-dark">Forgot
-                                Password?</a></small>
+                        <div class="mb-3">
+                            <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                            <input type="password" name="password_confirmation"
+                                class="form-control @error('password') is-invalid @enderror" id="password_confirmation"
+                                placeholder="Confirm New Password">
+                            @error('password')
+                                <div class="text-danger mt-2">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100">Submit</button>
                     </form>
                 </div>
             </div>

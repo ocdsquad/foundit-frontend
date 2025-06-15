@@ -3,18 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\OtpRequest;
+use App\Http\Requests\EmailRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Http;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPasswordRequest;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
-        $validatedData = $request->validate([
-            'fullname' => ['required', 'min:4', 'max:100', 'regex:/^[a-zA-Z\\s]*$/'],
-            'email' => ['required', 'max:100', 'regex:/^(?=.{1,64}@.{1,255}$)(?:(?![.])[a-zA-Z0-9._%+-]+(?:(?<!\\\\)[.][a-zA-Z0-9-]+)*?)@[a-zA-Z0-9.-]+(?:\\.[a-zA-Z]{2,50})+$/'],
-            'phone_number' => ['required', 'regex:/^(62|\\+62|0)8[0-9]{9,13}$/'],
-            'username' => ['required', 'min:3', 'max:50', 'regex:/^[a-z0-9.]*$/'],
-            'password' => ['required', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@_#\\-$]).*$/', 'confirmed']
-        ]);
+    public function showRegisForm() {
+        return view('auth.register');
+    }
+
+    public function register(RegisterRequest $request) {
+        $validatedData = $request->validated();
 
         $body = [
             'fullname' => $validatedData['fullname'],
@@ -27,61 +30,123 @@ class AuthController extends Controller
         $response = Http::post('http://localhost:8080/auth/register', $body);
 
          if ($response->created()) {
-            session(['registered_email' => $response->json('data')['email']]);
-            return redirect('/verify-otp')->with('flash', ['success','Registrasi berhasil, mohon verifikasi email anda']);
+            return redirect('/verify-otp?email=' . $response->json('data')['email'] . '&purpose=regis')->with('flash', ['success','Registrasi berhasil, mohon verifikasi email anda']);
          } else {
             return back()->with('flash', ['danger', $response->json()['message']]); 
          }
     }
 
-    public function verifyRegis(Request $request) {
-        $body = $request->validate([
-            'email' => ['required', 'max:100', 'regex:/^(?=.{1,64}@.{1,255}$)(?:(?![.])[a-zA-Z0-9._%+-]+(?:(?<!\\\\)[.][a-zA-Z0-9-]+)*?)@[a-zA-Z0-9.-]+(?:\\.[a-zA-Z]{2,50})+$/'],
-            'otp' => ['required', 'regex:/^[0-9]{6}$/']
-        ]);
+    public function showOtpForm() {
+        return view('auth.otp');
+    }
+
+    public function verifyRegis(OtpRequest $request) {
+        $body = $request->validated();
 
         $response = Http::post('http://localhost:8080/auth/verify-regis', $body);
 
         if ($response->ok()) {
-            session()->forget('registered_email');
             return redirect('/login')->with('flash', ['success', 'Verifikasi berhasil, silahkan login']);
         } else {
-            return back()->with('flash', ['warning', $response->json()['message']]);
+            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('otp');
         }
     }
 
-    public function sendOTP(Request $request) {
-        $body = $request->validate([
-            'email' => ['required', 'max:100', 'regex:/^(?=.{1,64}@.{1,255}$)(?:(?![.])[a-zA-Z0-9._%+-]+(?:(?<!\\\\)[.][a-zA-Z0-9-]+)*?)@[a-zA-Z0-9.-]+(?:\\.[a-zA-Z]{2,50})+$/']
-        ]);
+    public function sendOTP(EmailRequest $request) {
+        $body = $request->validated();
 
         $response = Http::post('http://localhost:8080/auth/send-otp', $body);
 
         if ($response->ok()) {
-            session(['registered_email' => $response->json('data')['email']]);
-            return redirect('/verify-otp')->with('flash', ['success','Resend OTP berhasil, mohon verifikasi email anda']);
+            return redirect('/verify-otp?email=' . $response->json()['data']['email'] . '&purpose=' . $request->purpose)->with('flash', ['success','Resend OTP berhasil, mohon verifikasi email anda']);
         } else {
             return back()->with('flash', ['danger', $response->json()['message']]);
         }
     }
 
-    public function login(Request $request) {
-        $body = $request->validate([
-            'username' => ['required', 'min:3', 'max:50', 'regex:/^[a-z0-9.]*$/'],
-            'password' => ['required', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@_#\\-$]).*$/']
-        ]);
+    public function showLoginForm() {
+        return view('auth.login');    
+    }
 
-        $response = Http::post('http://localhost:8080/auth/login', $body);
+    public function login(LoginRequest $request) {
+        $body = $request->validated();
+
+        $loginResponse = Http::post('http://localhost:8080/auth/login', $body);
+        
+        if ($loginResponse->ok()) {
+            $token = $loginResponse->json()['data']['token'];
+            $userResponse = Http::withToken($token)->get('http://localhost:8080/user/profile');
+
+            $request->session()->regenerate();
+            session([ 'auth' => [
+                    'token' => $token,
+                    'exp' =>  time() + 1800,
+                    'user' => $userResponse->ok() ? $userResponse->json()['data'] : null
+                ]
+            ]);
+
+            return redirect()->intended('/dashboard');
+        } elseif ($loginResponse->forbidden()) {
+            return redirect('/verify-otp?email=' . $loginResponse->json('data')['email'] . '&purpose=regis')->with('flash', ['warning','Akun anda belum terverifikasi, mohon verifikasi terlebih dahulu']);
+        } else {
+            return back()->with('flash', ['warning', $loginResponse->json()['message']])->onlyInput('username');
+        }
+    }
+
+    public function logout(Request $request) {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
+    }
+
+    public function showForgotPasswordForm() {
+        return view('auth.forgot-password');
+    }
+
+    public function forgotPassword(EmailRequest $request) {
+        $body = $request->validated();
+
+        $response = Http::post('http://localhost:8080/auth/forgot-password', $body);
 
         if ($response->ok()) {
-            session(['auth_token' => $response->json()['data']['token']]);
-            $request->session()->regenerate();
-            return redirect()->intended();
-        } elseif ($response->forbidden()) {
-            session(['registered_email' => $response->json()['data']['email']]);
-            return redirect('/verify-otp')->with('flash', ['warning','Akun anda belum terverifikasi, mohon verifikasi terlebih dahulu']);
+            return redirect('/verify-otp?email=' . $response->json()['data']['email'] . '&purpose=forgot')->with('flash', ['success','OTP telah dikirim, mohon verifikasi email anda']);
         } else {
-            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('username');
+            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('email');
+        }
+    }
+
+    public function verifyForgotPassword(OtpRequest $request) {
+         $body = $request->validated();
+
+        $response = Http::post('http://localhost:8080/auth/verify-forgot-password', $body);
+
+        if ($response->ok()) {
+            return redirect('/reset-password?token=' . $response->json()['data']['token'] . '&email=' . $body['email'])->with('flash', ['success', 'Verifikasi berhasil, silahkan reset password anda']);
+        } else {
+            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('otp');
+        }
+    }
+
+    public function showResetPasswordForm() {
+        return view('auth.reset-password');
+    }
+
+    public function resetPassword(ResetPasswordRequest $request) {
+        $validatedData = $request->validated();
+
+        $body = [
+            'email' => $validatedData['email'],
+            'new-password' => $validatedData['password'],
+            'confirm-new-password' => $validatedData['password'],
+            'token' => $request->token
+        ];
+
+        $response = Http::post('http://localhost:8080/auth/reset-password', $body);
+
+        if ($response->ok()) {
+            return redirect('/login')->with('flash', ['success', 'Reset password berhasil, silahkan login']);
+        } else {
+            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('email');
         }
     }
 }

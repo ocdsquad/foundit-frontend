@@ -22,15 +22,16 @@
         <div class="container px-4 px-lg-5 mb-5">
             <div class="row justify-content-center">
                 <div class="col-lg-4">
-                    <h3 class="mb-5 text-center">Verify Registration</h3>
+                    <h3 class="mb-5 text-center">Verify OTP</h3>
                     @if (session('flash'))
                         <div class="alert alert-{{ session('flash')[0] }}">
                             {{ session('flash')[1] }}
                         </div>
                     @endif
-                    <form action="/verify-regis" method="post">
+                    <form action="{{ request()->purpose == 'regis' ? '/verify-regis' : '/verify-forgot-password' }}"
+                        method="post">
                         @csrf
-                        <input type="hidden" name="email" value="{{ session('registered_email') }}">
+                        <input type="hidden" name="email" value="{{ request()->email }}">
                         <div>
                             <label for="otp" class="mt-4 mb-2 ms-1">Enter the OTP code sent to your email</label>
                             <input type="text" name="otp" class="form-control @error('otp') is-invalid @enderror"
