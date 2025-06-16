@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\EmailSession;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -19,21 +18,30 @@ Route::get('/', function () {
     return view('detail');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
-});
-
-Route::get('/register', function () {
-    return view('auth.register');
-});
-
-Route::get('/verify-otp', function () {
-    return view('auth.otp');
-})->middleware(EmailSession::class);
-
+// Auth
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/verify-regis', 'verifyRegis');
-    Route::post('/send-otp', 'sendOTP');
-    Route::post('/login', 'login');
+    Route::middleware('guest.custom')->group(function () {
+        Route::get('login', 'showLoginForm');
+        Route::post('/login', 'login');
+
+        Route::get('register', 'showRegisForm');
+        Route::post('/register', 'register');
+        
+        Route::get('verify-otp', 'showOtpForm')->middleware('verify.otp');
+        Route::post('/verify-regis', 'verifyRegis');
+        Route::post('/verify-forgot-password', 'verifyForgotPassword');
+        Route::post('/send-otp', 'sendOTP');
+
+        Route::get('forgot-password', 'showForgotPasswordForm');
+        Route::post('/forgot-password', 'forgotPassword');
+
+        Route::get('reset-password', 'showResetPasswordForm')->middleware('reset.password');
+        Route::post('/reset-password', 'resetPassword');
+    });
+
+    Route::post('/logout', 'logout')->middleware('auth.custom');
 });
+
+Route::get('/dashboard', function() {
+    dd(session('auth'));
+})->middleware('auth.custom');
