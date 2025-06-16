@@ -37,3 +37,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/send-otp', 'sendOTP');
     Route::post('/login', 'login');
 });
+
+Route::get('/profile', function () {
+    return view('profile');
+});
