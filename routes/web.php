@@ -49,3 +49,6 @@ Route::get('/dashboard', function() {
 Route::get('/profile', function () {
     return view('profile');
 });
+Route::get('/form', function () {
+    return view('form');
+});
