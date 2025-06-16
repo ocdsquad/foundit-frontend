@@ -45,3 +45,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::get('/dashboard', function() {
     dd(session('auth'));
 })->middleware('auth.custom');
+
+Route::get('/profile', function () {
+    return view('profile');
+});

@@ -75,13 +75,48 @@
                             </div>
                             <form action="" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-dark px-3">Report to Email</button>
+                                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                Report to Email
+                                </button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- Modal -->
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="/send-otp" method="POST" class="modal-content">
+            @csrf
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Report Lost Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-2">
+                <label class="form-label">Fullname</label>
+                <input type="text" class="form-control" name="name" required>
+                </div>
+                <div class="mb-2">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" required>
+                </div>
+                <div class="mb-2">
+                <label class="form-label">Message</label>
+                <textarea class="form-control" name="message" rows="3" required></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-dark w-100">Send Email</button>
+            </div>
+            </form>
+        </div>
+        </div>
+
         <!-- Related items section-->
         {{-- <section class="py-5 bg-light">
             <div class="container px-4 px-lg-5 mt-5">
