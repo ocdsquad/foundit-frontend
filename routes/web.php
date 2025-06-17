@@ -3,6 +3,8 @@
 use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +17,14 @@ use App\Http\Controllers\AuthController;
 | 
 */
 
-Route::get('/', function () {
+
+// Route::get('/', function () {
+//     return view('home');
+// });
+
+Route::get('/', [HomeController::class, 'index'])->name('items.index');
+
+Route::get('/items/detail', function () {
     return view('detail');
 });
 
