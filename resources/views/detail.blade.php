@@ -25,30 +25,33 @@
                         <img class="card-img-top mb-5 mb-md-0 rounded-4" src="https://dummyimage.com/600x400/dee2e6/6c757d.jpg" alt="..." />
                     </div>
                     <div class="col-md-6">
-                        <h1 class="display-5 fw-bolder">Laptop</h1>
-                        <div class="small mb-1">12/06/2025 17:00</div>
+                        <h1 class="display-5 fw-bolder">{{$item['name']}}</h1>
+                        <div class="small mb-1">{{$item['createdAt']}}</div>
                         {{-- <div class="fs-5 mb-5">
                             <span class="text-decoration-line-through">$45.00</span>
                             <span>$40.00</span>
                         </div> --}}
                         <div>
                             <h4>Description</h4>
-                            <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
+                            <p class="lead">{{$item['description']}}</p>
                         </div>
                         <div>
                             <h4>Chronology</h4>
-                            <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
+                            <p class="lead">{{$item['chronology']}}</p>
                         </div>
                         <div class="d-flex align-items-center justify-content-between p-3 rounded-4" style="background-color: #d9d9d9; max-width: 400px;">
                             <div class="d-flex align-items-center gap-2">
                                 <div class="rounded-circle border border-dark d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
                                     <i class="bi bi-person" style="font-size: 1.5rem;"></i>
                                 </div>
-                                <strong class="m-0">Reza Pangestu</strong>
+                                <strong class="m-0">{{$item['userId'] ? $item['userId'] : 'Reza Pangestu'}}</strong>
                             </div>
+                            @php
+                                $isLoggedIn = session()->has('auth') && session('auth')['exp'] > time();
+                            @endphp
                             <form action="" method="POST">
                                 @csrf
-                                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#{{$isLoggedIn ? 'modalAuth' : 'modalGuest'}}">
                                 Report to Email
                                 </button>
                             </form>
@@ -57,38 +60,59 @@
                 </div>
             </div>
         </section>
+       
+        <!-- Report Modal -->
+            <div class="modal fade" id="modalAuth" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="/send-otp" method="POST" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Report Lost Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+                <div class="modal-body">
+                    <div class="mb-2">
+                    <label class="form-label">Fullname</label>
+                    <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-2">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-control" name="message" rows="3" required></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-dark w-100">Send Email</button>
+                </div>
+                </form>
+            </div>
+            </div>
+      
+        <div class="modal fade" id="modalGuest" tabindex="-1" aria-labelledby="modalGuestLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="/send-otp" method="POST" class="modal-content">
+            <form action="" method="POST">
             @csrf
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportModalLabel">Report Lost Item</h5>
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="modalGuestLabel">Form Report (Belum Registrasi)</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="mb-2">
-                <label class="form-label">Fullname</label>
-                <input type="text" class="form-control" name="name" required>
                 </div>
-                <div class="mb-2">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" name="email" required>
+                <div class="modal-body">
+                <input name="fullname" class="form-control mb-2" placeholder="Fullname" required>
+                <input name="email" type="email" class="form-control mb-2" placeholder="Email" required>
+                <textarea name="message" class="form-control mb-2" placeholder="Message" rows="3" required></textarea>
                 </div>
-                <div class="mb-2">
-                <label class="form-label">Message</label>
-                <textarea class="form-control" name="message" rows="3" required></textarea>
+                <div class="modal-footer">
+                <button class="btn btn-dark w-100" type="submit">Send Email</button>
                 </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-dark w-100">Send Email</button>
             </div>
             </form>
         </div>
         </div>
+     
+        <!-- Modal -->
+        
 
         <!-- Related items section-->
         {{-- <section class="py-5 bg-light">
@@ -200,8 +224,7 @@
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; FoundIt 2025</p></div>
         </footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
     </body>
