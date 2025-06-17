@@ -12,7 +12,7 @@
 
                 <!-- Navbar tengah -->
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item mx-3"><a class="nav-link active" aria-current="page" href="#!">Home</a>
+                    <li class="nav-item mx-3"><a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item mx-3"><a class="nav-link" href="/form">Form</a></li>
                     <li class="nav-item mx-3"><a class="nav-link" href="#!">Dashboard</a></li>
