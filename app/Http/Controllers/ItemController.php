@@ -42,7 +42,7 @@ class ItemController extends Controller
     public function create(ItemRequest $request)
     {
   
-        dd($request);
+        dd($request->json());
         $request = $request->validated();
         $token = session('auth.token');
         $request['status'] = 'FRESH';
@@ -58,7 +58,7 @@ class ItemController extends Controller
         ];
         // $request->file('file') ? $request->file('file')->store('items', 'public') : null
         dd($body);
-        $response = Http::withToken($token)->post('http://localhost:8080/item', $body);
+        $response = Http::withToken($token)->post('http://localhost:8080/items', $body);
         if ($response->created()) {
             return back()->with('flash', ['success', $response->json()['message']]);
         } else {
