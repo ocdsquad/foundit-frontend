@@ -169,7 +169,7 @@
                                 <p class="text-muted">{{ $item['description'] ?? '-' }}</p>
                             </div>
                             <div class="card-footer text-center bg-transparent border-top-0">
-                                <a class="btn btn-outline-dark" href="#">Lihat Barang</a>
+                                <a class="btn btn-outline-dark" href="/items/{{$item['id']}}">Lihat Barang</a>
                             </div>
                         </div>
                     </div>

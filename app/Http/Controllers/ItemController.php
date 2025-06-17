@@ -25,14 +25,26 @@ class ItemController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    
+    public function getDetailItem($id)
+    {
+        $token = session('auth.token');
+        $response = Http::withToken($token)->get("http://localhost:8080/items/{$id}");
+        // dd($response->json());
+        
+        if ($response->ok()) {
+            return view('detail', ['item' => $response->json()['data']]);
+        } else {
+            return back()->with('flash', ['danger', 'Item not found']);
+        }
+    }
+
+
     public function create(ItemRequest $request)
     {
   
-        dd($request);
+        dd($request->json());
         $request = $request->validated();
         $token = session('auth.token');
-        $user_id = session('auth.user.id');
         $request['status'] = 'FRESH';
 
         $body = [
@@ -42,12 +54,11 @@ class ItemController extends Controller
             'status' => $request['status'],
             'category_id' => $request['category_id'],
             'location' => $request['location'],
-            'user_id' => $user_id,
             'file' => null
         ];
         // $request->file('file') ? $request->file('file')->store('items', 'public') : null
         dd($body);
-        $response = Http::withToken($token)->post('http://localhost:8080/item', $body);
+        $response = Http::withToken($token)->post('http://localhost:8080/items', $body);
         if ($response->created()) {
             return back()->with('flash', ['success', $response->json()['message']]);
         } else {

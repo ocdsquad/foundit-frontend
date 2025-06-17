@@ -24,9 +24,7 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('items.index');
 
-Route::get('/items/detail', function () {
-    return view('detail');
-});
+Route::get('/items/{id}', [ItemController::class, 'getDetailItem'])->name('item.detail');
 
 // Auth
 Route::controller(AuthController::class)->group(function () {
@@ -62,5 +60,10 @@ Route::get('/profile', function () {
 
 Route::get('form', [ItemController::class, 'showForm']);
 Route::post('/form', [ItemController::class, 'create'])->middleware('auth.custom')->name('item.create');
+
+
+Route::post('/report/{id}', [\App\Http\Controllers\ReportController::class, 'store'])
+    ->middleware('auth.custom')
+    ->name('report.store');
 
 
