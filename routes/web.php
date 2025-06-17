@@ -3,6 +3,8 @@
 use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,13 @@ use App\Http\Controllers\AuthController;
 | be assigned to the "web" middleware group. Make something great!
 | 
 */
+
+
+// Route::get('/', function () {
+//     return view('home');
+// });
+
+Route::get('/', [HomeController::class, 'index'])->name('items.index');
 
 Route::get('/items/{id}', [ItemController::class, 'getDetailItem'])->name('item.detail');
 
