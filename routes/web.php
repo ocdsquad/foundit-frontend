@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -11,7 +12,7 @@ use App\Http\Controllers\AuthController;
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
-|
+| 
 */
 
 Route::get('/', function () {
@@ -49,6 +50,8 @@ Route::get('/dashboard', function() {
 Route::get('/profile', function () {
     return view('profile');
 });
-Route::get('/form', function () {
-    return view('form');
-});
+
+Route::get('form', [ItemController::class, 'showForm']);
+Route::post('/form', [ItemController::class, 'create'])->middleware('auth.custom')->name('item.create');
+
+
