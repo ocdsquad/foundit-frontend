@@ -68,6 +68,8 @@ Route::post('/report/{id}', [ReportController::class, 'sendReport'])
     ->name('report.store');
 Route::post('/report/{id}/guest', [ReportController::class, 'sendReportGuest']);
 Route::get('/report/{id}/verify-otp', [ReportController::class, 'showVerifyOtpForm']);
-Route::post('/report/{id}/verify-and-send', [ReportController::class, 'verifyOtp'])
-    ->name('report.verify-otp');
+Route::post('/report/{id}/verify-and-send', [ReportController::class, 'verifyOtp']);
 
+Route::get('/dashboard', function() {
+    dd(session('auth'));
+})->middleware('auth.custom');
