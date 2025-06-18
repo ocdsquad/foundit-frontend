@@ -56,11 +56,6 @@ Route::get('form', [ItemController::class, 'showForm']);
 Route::post('/form', [ItemController::class, 'create'])->middleware('auth.custom')->name('item.create');
 
 
-Route::post('/report/{id}', [ReportController::class, 'sendReport'])
-    ->middleware('auth.custom')
-    ->name('report.store');
-
-
 Route::middleware('auth.custom')->group(function () {
     Route::controller(UserController::class)->group(function() {
         Route::get('/profile', 'edit');
@@ -68,6 +63,9 @@ Route::middleware('auth.custom')->group(function () {
     });
 });
 
+Route::post('/report/{id}', [ReportController::class, 'sendReport'])
+    ->middleware('auth.custom')
+    ->name('report.store');
 Route::post('/report/{id}/guest', [ReportController::class, 'sendReportGuest']);
 Route::get('/report/{id}/verify-otp', [ReportController::class, 'showVerifyOtpForm']);
 Route::post('/report/{id}/verify-and-send', [ReportController::class, 'verifyOtp'])
