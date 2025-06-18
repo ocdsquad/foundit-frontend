@@ -36,7 +36,39 @@ class ReportController extends Controller
   
         $response = Http::post("http://localhost:8080/report/{$id}", $body);
 
+        if ($response->created()) {
+            return redirect("/report/{$id}/verify-otp")->with('flash', ['success', $response->json()['message']])
+                ->withInput(['data' => $body]);
+        }
+
         return back()->with('report',['message' => $response->json()['message']]);
+    }
+
+
+    function showVerifyOtpForm(Request $request, $id)
+    {
+        $email = $request->input('email');
+        return view('report.verify-otp', compact('id', 'email'));
+    }
+
+    function verifyOtp(Request $request, $id)
+    {
+
+        $email = $request->input('email');
+        $otp = $request->input('otp');
+
+        $body = [
+            'email' => $email,
+            'otp' => $otp
+        ];
+
+        $response = Http::post("http://localhost:8080/report/{$id}/verify-and-send", $body);
+
+        if ($response->ok()) {
+            return redirect("/items/{$id}")->with('flash', ['success', 'Report sent successfully']);
+        } else {
+            return back()->with('flash', ['danger', 'Verification failed, please try again'])->withInput();
+        }
     }
     
 }
