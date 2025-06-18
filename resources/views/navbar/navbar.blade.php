@@ -28,7 +28,8 @@
                             <span class="d-none d-lg-inline">Profile</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                            <li><a class="dropdown-item {{ request()->is('profile') ? 'active' : '' }}"
+                                    href="/profile">Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
