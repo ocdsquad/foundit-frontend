@@ -28,10 +28,12 @@
                             {{ session('flash')[1] }}
                         </div>
                     @endif
-                    <form action="report/{{$id}}/verify-and-send"
+                    <form action="/report/{{$id}}/verify-and-send"
                         method="post">
                         @csrf
-                        <input type="hidden" name="email" value="{{ request()->email }}">
+                        <input type="hidden" name="email" value="{{ $data['email'] ?? request()->email }}">
+                        <input type="hidden" name="fullname" value="{{ $data['fullname'] ?? request()->fullname }}">
+                        <input type="hidden" name="message" value="{{ $data['message'] ?? request()->message }}">
                         <div>
                             <label for="otp" class="mt-4 mb-2 ms-1">Enter the OTP code sent to your email</label>
                             <input type="text" name="otp" class="form-control @error('otp') is-invalid @enderror"
