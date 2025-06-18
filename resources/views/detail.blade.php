@@ -98,7 +98,7 @@
       
         <div class="modal fade" id="modalGuest" tabindex="-1" aria-labelledby="modalGuestLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="/report/guest/{{$item['id']}}" method="POST">
+            <form action="/report/{{$item['id']}}/guest" method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
