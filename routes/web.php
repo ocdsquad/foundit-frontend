@@ -67,3 +67,15 @@ Route::post('/report/{id}', [\App\Http\Controllers\ReportController::class, 'sto
     ->name('report.store');
 
 
+Route::middleware('auth.custom')->group(function () {
+    Route::controller(UserController::class)->group(function() {
+        Route::get('/profile', 'edit');
+        Route::put('/profile', 'update');
+    });
+});
+
+Route::post('/report/{id}', [\App\Http\Controllers\ReportController::class, 'sendReport'])
+    ->middleware('auth.custom')
+    ->name('report.store');
+
+
