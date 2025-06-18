@@ -17,6 +17,13 @@
     <body>
 
         @include('navbar.navbar')
+
+        @if(session('report'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('report')['message'] }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <!-- Product section-->
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
@@ -64,7 +71,7 @@
         <!-- Report Modal -->
             <div class="modal fade" id="modalAuth" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <form action="/send-otp" method="POST" class="modal-content">
+                <form action="/report/{{$item['id']}}" method="POST" class="modal-content">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="reportModalLabel">Report Lost Item</h5>
@@ -91,7 +98,7 @@
       
         <div class="modal fade" id="modalGuest" tabindex="-1" aria-labelledby="modalGuestLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="" method="POST">
+            <form action="/report/guest/{{$item['id']}}" method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">

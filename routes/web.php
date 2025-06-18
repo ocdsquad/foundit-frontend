@@ -62,7 +62,7 @@ Route::get('form', [ItemController::class, 'showForm']);
 Route::post('/form', [ItemController::class, 'create'])->middleware('auth.custom')->name('item.create');
 
 
-Route::post('/report/{id}', [\App\Http\Controllers\ReportController::class, 'store'])
+Route::post('/report/{id}', [\App\Http\Controllers\ReportController::class, 'sendReport'])
     ->middleware('auth.custom')
     ->name('report.store');
 
