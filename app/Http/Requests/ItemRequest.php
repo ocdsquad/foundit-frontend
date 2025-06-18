@@ -25,7 +25,6 @@ class ItemRequest extends FormRequest
         'name' => ['required', 'string', 'min:3', 'max:100'],
         'description' => ['required', 'string', 'min:20', 'max:255'],
         'chronology' => ['required', 'string', 'min:20', 'max:255'],
-        'status' => ['required', 'regex:/^(FRESH|ON_PROGRESS|FOUND)$/'],
         'category_id' => ['required', 'integer', 'min:1'],
         'location' => ['required', 'string', 'min:5', 'max:255'],
         ];
