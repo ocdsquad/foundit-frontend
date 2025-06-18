@@ -4,6 +4,7 @@ use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
 
 
@@ -35,11 +36,6 @@ Route::controller(AuthController::class)->group(function () {
 
         Route::get('register', 'showRegisForm');
         Route::post('/register', 'register');
-        
-        Route::get('verify-otp', 'showOtpForm')->middleware('verify.otp');
-        Route::post('/verify-regis', 'verifyRegis');
-        Route::post('/verify-forgot-password', 'verifyForgotPassword');
-        Route::post('/send-otp', 'sendOTP');
 
         Route::get('forgot-password', 'showForgotPasswordForm');
         Route::post('/forgot-password', 'forgotPassword');
@@ -47,16 +43,13 @@ Route::controller(AuthController::class)->group(function () {
         Route::get('reset-password', 'showResetPasswordForm')->middleware('reset.password');
         Route::post('/reset-password', 'resetPassword');
     });
+        
+    Route::get('verify-otp', 'showOtpForm')->middleware('verify.otp');
+    Route::post('/verify-regis', 'verifyRegis');
+    Route::post('/verify-forgot-password', 'verifyForgotPassword');
+    Route::post('/send-otp', 'sendOTP');
 
     Route::post('/logout', 'logout')->middleware('auth.custom');
-});
-
-Route::get('/dashboard', function() {
-    dd(session('auth'));
-})->middleware('auth.custom');
-
-Route::get('/profile', function () {
-    return view('profile');
 });
 
 Route::get('form', [ItemController::class, 'showForm']);
@@ -67,6 +60,13 @@ Route::post('/report/{id}', [ReportController::class, 'sendReport'])
     ->middleware('auth.custom')
     ->name('report.store');
 
+
+Route::middleware('auth.custom')->group(function () {
+    Route::controller(UserController::class)->group(function() {
+        Route::get('/profile', 'edit');
+        Route::put('/profile', 'update');
+    });
+});
 
 Route::post('/report/{id}/guest', [ReportController::class, 'sendReportGuest']);
 Route::get('/report/{id}/verify-otp', [ReportController::class, 'showVerifyOtpForm']);
