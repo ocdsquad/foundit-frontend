@@ -56,7 +56,6 @@ class ItemController extends Controller
             'location' => $request['location'],
             'file' => null
         ];
-        // $request->file('file') ? $request->file('file')->store('items', 'public') : null
         dd($body);
         $response = Http::withToken($token)->post('http://localhost:8080/items', $body);
         if ($response->created()) {
