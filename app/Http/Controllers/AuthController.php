@@ -31,9 +31,9 @@ class AuthController extends Controller
 
          if ($response->created()) {
             return redirect('/verify-otp?email=' . $response->json('data')['email'] . '&purpose=regis')->with('flash', ['success','Registrasi berhasil, mohon verifikasi email anda']);
-         } else {
-            return back()->with('flash', ['danger', $response->json()['message']]); 
          }
+            
+         return back()->with('flash', ['danger', $response->json()['message']]);
     }
 
     public function showOtpForm() {
@@ -46,10 +46,17 @@ class AuthController extends Controller
         $response = Http::post('http://localhost:8080/auth/verify-regis', $body);
 
         if ($response->ok()) {
-            return redirect('/login')->with('flash', ['success', 'Verifikasi berhasil, silahkan login']);
-        } else {
-            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('otp');
+            if (session()->has('auth')) {
+                $auth = session('auth');
+                $auth['user']['active'] = true;
+                session(['auth' => $auth]);
+                return redirect('/profile')->with('flash', ['success', 'Verifikasi email berhasil']);
+            } else {
+                return redirect('/login')->with('flash', ['success', 'Verifikasi berhasil, silahkan login']);
+            }
         }
+            
+        return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('otp');
     }
 
     public function sendOTP(EmailRequest $request) {
@@ -59,9 +66,9 @@ class AuthController extends Controller
 
         if ($response->ok()) {
             return redirect('/verify-otp?email=' . $response->json()['data']['email'] . '&purpose=' . $request->purpose)->with('flash', ['success','Resend OTP berhasil, mohon verifikasi email anda']);
-        } else {
-            return back()->with('flash', ['danger', $response->json()['message']]);
         }
+            
+        return back()->with('flash', ['danger', $response->json()['message']]);
     }
 
     public function showLoginForm() {
@@ -85,12 +92,14 @@ class AuthController extends Controller
                 ]
             ]);
 
-            return redirect()->intended('/dashboard');
-        } elseif ($loginResponse->forbidden()) {
+            return redirect()->intended('/profile');
+        } 
+        
+        if ($loginResponse->forbidden()) {
             return redirect('/verify-otp?email=' . $loginResponse->json('data')['email'] . '&purpose=regis')->with('flash', ['warning','Akun anda belum terverifikasi, mohon verifikasi terlebih dahulu']);
-        } else {
-            return back()->with('flash', ['warning', $loginResponse->json()['message']])->onlyInput('username');
         }
+            
+        return back()->with('flash', ['warning', $loginResponse->json()['message']])->onlyInput('username');
     }
 
     public function logout(Request $request) {
@@ -110,9 +119,9 @@ class AuthController extends Controller
 
         if ($response->ok()) {
             return redirect('/verify-otp?email=' . $response->json()['data']['email'] . '&purpose=forgot')->with('flash', ['success','OTP telah dikirim, mohon verifikasi email anda']);
-        } else {
-            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('email');
         }
+        
+        return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('email');
     }
 
     public function verifyForgotPassword(OtpRequest $request) {
@@ -122,9 +131,9 @@ class AuthController extends Controller
 
         if ($response->ok()) {
             return redirect('/reset-password?token=' . $response->json()['data']['token'] . '&email=' . $body['email'])->with('flash', ['success', 'Verifikasi berhasil, silahkan reset password anda']);
-        } else {
-            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('otp');
         }
+            
+        return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('otp');
     }
 
     public function showResetPasswordForm() {
@@ -145,8 +154,8 @@ class AuthController extends Controller
 
         if ($response->ok()) {
             return redirect('/login')->with('flash', ['success', 'Reset password berhasil, silahkan login']);
-        } else {
-            return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('email');
         }
+            
+        return back()->with('flash', ['warning', $response->json()['message']])->onlyInput('email');
     }
 }

@@ -15,8 +15,15 @@ class AuthCustom
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (session()->has('auth') && session('auth')['exp'] > time()) {
-            return $next($request);
+        if (session()->has('auth')) {
+            if (!session('auth')['user']['active']) {
+                $email = session('auth')['user']['email'];
+                return redirect('/verify-otp?email=' . $email . '&purpose=regis')->with('flash', ['warning', 'Mohon verifikasi email terlebih dahulu']);
+            }
+
+            if (session('auth')['user']['active'] && session('auth')['exp'] > time()) {
+                return $next($request);
+            }
         }
 
         session()->forget('auth');
