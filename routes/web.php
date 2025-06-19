@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DashboardController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 
 /*
@@ -70,6 +72,11 @@ Route::post('/report/{id}/guest', [ReportController::class, 'sendReportGuest']);
 Route::get('/report/{id}/verify-otp', [ReportController::class, 'showVerifyOtpForm']);
 Route::post('/report/{id}/verify-and-send', [ReportController::class, 'verifyOtp']);
 
-Route::get('/dashboard', function() {
+Route::get('/test', function() {
     dd(session('auth'));
 })->middleware('auth.custom');
+
+
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
+Route::get('/dashboard/{id}', [DashboardController::class, 'getDetailItem']);
