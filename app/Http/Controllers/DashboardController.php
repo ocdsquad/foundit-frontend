@@ -26,6 +26,18 @@ class DashboardController extends Controller
         }
         // return view('dashboard.dashboard');
     }
+
+    function showDetailItem(Request $request, $id)
+    {
+        $token = session('auth.token');
+        $response = Http::withToken($token)->get("http://localhost:8080/items/{$id}");
+
+        if ($response->ok()) {
+            return view('dashboard.detail', ['item' => $response->json()['data']]);
+        } else {
+            return back()->with('flash', ['danger', 'Item not found']);
+        }
+    }
     
 }
 
