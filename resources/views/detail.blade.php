@@ -29,7 +29,7 @@
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <div class="col-md-6">
-                        <img class="card-img-top mb-5 mb-md-0 rounded-4" src="https://dummyimage.com/600x400/dee2e6/6c757d.jpg" alt="..." />
+                        <img class="card-img-top mb-5 mb-md-0 rounded-4" src="{{ Str::startsWith($item['imageUrl'], 'http') ? $item['imageUrl'] : asset('storage/' . $item['imageUrl']) }}" alt="{{ $item['name'] }}">
                     </div>
                     <div class="col-md-6">
                         <h1 class="display-5 fw-bolder">{{$item['name']}}</h1>
@@ -229,7 +229,7 @@
         </section> --}}
         <!-- Footer-->
         <footer class="py-5 bg-dark">
-            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; FoundIt 2025</p></div>
+            <div class="container"><p class="m-0 text-center text-white">{{ now()->year }} FoundIt</p></div>
         </footer>
 
         <!-- Core theme JS-->

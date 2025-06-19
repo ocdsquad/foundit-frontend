@@ -80,3 +80,11 @@ Route::get('/test', function() {
 Route::get('/dashboard', [DashboardController::class, 'index']);
 
 Route::get('/dashboard/{id}', [DashboardController::class, 'showDetailItem']);
+
+Route::delete('/items/{id}', [ItemController::class, 'destroy'])->name('item.destroy')->middleware('auth.custom');
+
+Route::get('/item/{id}', [ItemController::class, 'show'])->name('item.show');
+
+Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
+
+Route::put('/item/{id}', [ItemController::class, 'update'])->name('item.update');
