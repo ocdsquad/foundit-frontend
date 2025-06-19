@@ -79,4 +79,4 @@ Route::get('/test', function() {
 
 Route::get('/dashboard', [DashboardController::class, 'index']);
 
-Route::get('/dashboard/{id}', [DashboardController::class, 'getDetailItem']);
+Route::get('/dashboard/{id}', [DashboardController::class, 'showDetailItem']);
