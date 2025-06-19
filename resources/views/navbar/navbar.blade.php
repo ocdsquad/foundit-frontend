@@ -15,8 +15,7 @@
                     <li class="nav-item mx-3"><a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item mx-3"><a class="nav-link" href="/form">Form</a></li>
-                    <li class="nav-item mx-3"><a class="nav-link" href="#!">Dashboard</a></li>
-                    <li class="nav-item mx-3"><a class="nav-link" href="#!">About</a></li>
+                    <li class="nav-item mx-3"><a class="nav-link" href="/dashboard">Dashboard</a></li>
                 </ul>
 
                 @if (session()->has('auth'))
