@@ -18,7 +18,6 @@ class DashboardController extends Controller
 
         if ($response->successful()) {
             $data = $response->json('data');
-            
 
             return view('dashboard.dashboard', compact('data'));
         }else{

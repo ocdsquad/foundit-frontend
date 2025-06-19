@@ -17,6 +17,14 @@
 <body>
     @include('navbar.navbar')
 
+    @if (session('flash'))
+    @php [$type, $message] = session('flash'); @endphp
+        <div class="alert alert-{{ $type }} alert-dismissible fade show mx-4 mt-4" role="alert">
+            {{ $message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="container mt-5">
         <h3 class="mb-4">Upload Lost Item</h3>
         <form action={{route('item.create')}} method="post" enctype="multipart/form-data">
@@ -49,10 +57,11 @@
                     <label for="category_id" class="form-label">Category</label>
                     <select class="form-select @error('category_id') is-invalid @enderror" id="category" name="category_id">
                         <option value="">Select Category</option>
-                        <option value="1" {{ old('category_id') == 1 ? 'selected' : '' }}>Aksesoris</option>
-                        <option value="2" {{ old('category_id') == 2 ? 'selected' : '' }}>Elektronik</option>
-                        <option value="3" {{ old('category_id') == 3 ? 'selected' : '' }}>Dokumen</option>
-                        <option value="4" {{ old('category_id') == 4 ? 'selected' : '' }}>Kunci dan Kendaraan</option>
+                        <option value="1" {{ old('category_id') == 1 ? 'selected' : '' }}>Accessories</option>
+                        <option value="2" {{ old('category_id') == 2 ? 'selected' : '' }}>Electronics</option>
+                        <option value="3" {{ old('category_id') == 3 ? 'selected' : '' }}>Documents</option>
+                        <option value="4" {{ old('category_id') == 4 ? 'selected' : '' }}>Keys & Vehicles</option>
+
                     </select>
                     @error('category_id')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -77,7 +86,8 @@
                     </div>
                 </div>
 
-            <button type="submit" class="btn btn-dark w-100">Report</button>
+            <button type="submit" class="btn btn-dark w-100" style="margin-bottom: 50px;">Report</button>
+            
         </form>
     </div>
 

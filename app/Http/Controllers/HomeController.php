@@ -14,7 +14,7 @@ class HomeController extends Controller
             'category-id' => $request->input('category-id'),
             'name' => $request->input('name'),
             'page' => $request->input('page', 0),
-            'size' => $request->input('size', 10),
+            'size' => $request->input('size', 12),
             'sort' => $request->input('sort') ?? 'createdAt,desc',
         ];
 
