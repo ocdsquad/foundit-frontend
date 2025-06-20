@@ -36,13 +36,13 @@
                     <!-- Avatar Image -->
                     <div class="rounded-circle bg-secondary overflow-hidden" style="width: 150px; height: 150px;">
                         <img src="{{ $data['imageUrl'] ?? 'https://via.placeholder.com/150' }}" alt="Avatar"
-                            class="img-fluid w-100 h-100" style="object-fit: cover;">
+                            class="img-preview img-fluid w-100 h-100" style="object-fit: cover;">
                     </div>
 
                     <!-- Upload Button -->
                     <label class="btn btn-light border rounded-pill shadow-sm mt-3 d-flex align-items-center gap-2">
                         <i class="bi bi-upload"></i> Upload
-                        <input type="file" name="avatar" hidden>
+                        <input type="file" name="avatar" id="avatar" onChange="previewImage()" hidden>
                     </label>
                 </div>
 
@@ -84,8 +84,19 @@
             </div>
         </form>
     </div>
+    <script>
+        function previewImage() {
+            const avatar = document.querySelector('#avatar');
+            const imgPreview = document.querySelector('.img-preview');
 
+            const oFReader = new FileReader();
+            oFReader.readAsDataURL(avatar.files[0]);
 
+            oFReader.onload = function(oFREvent) {
+                imgPreview.src = oFREvent.target.result;
+            }
+        }
+    </script>
 </body>
 
 </html>
