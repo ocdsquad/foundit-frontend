@@ -44,7 +44,7 @@
                     </form>
                     <form action="/send-otp" method="post">
                         @csrf
-                        <input type="hidden" name="email" value="{{ session('registered_email') }}">
+                        <input type="hidden" name="email" value="{{ request()->email }}">
                         <button class="btn btn-outline-dark w-100 my-3" type="submit" id="otp">Resend
                             OTP</button>
                     </form>
